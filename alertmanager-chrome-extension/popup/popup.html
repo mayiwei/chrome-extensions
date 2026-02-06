@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alertmanager Monitor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <span class="header-title">AM Monitor</span>
+      <span class="connection-dot" id="connectionDot" title="Disconnected"></span>
+    </div>
+    <div class="header-right">
+      <select id="instanceSelector" class="instance-selector" title="Select instance"></select>
+      <button id="refreshBtn" class="icon-btn" title="Refresh">&#x21bb;</button>
+      <button id="settingsBtn" class="icon-btn" title="Settings">&#x2699;</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="alerts">Alerts</button>
+    <button class="tab" data-tab="silences">Silences</button>
+    <button class="tab" data-tab="status">Status</button>
+  </nav>
+
+  <div id="alertsTab" class="tab-content active">
+    <div class="toolbar">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search alerts...">
+      <div class="filter-row">
+        <label class="filter-chip"><input type="checkbox" id="filterActive" checked><span>Active</span></label>
+        <label class="filter-chip"><input type="checkbox" id="filterSilenced" checked><span>Silenced</span></label>
+        <label class="filter-chip"><input type="checkbox" id="filterInhibited" checked><span>Inhibited</span></label>
+      </div>
+      <div class="filter-row">
+        <button class="sev-btn active" data-severity="all">All</button>
+        <button class="sev-btn" data-severity="critical">Critical</button>
+        <button class="sev-btn" data-severity="warning">Warning</button>
+        <button class="sev-btn" data-severity="info">Info</button>
+        <select id="groupBySelect" class="group-select">
+          <option value="alertname">Group: alertname</option>
+          <option value="severity">Group: severity</option>
+          <option value="instance">Group: instance</option>
+          <option value="job">Group: job</option>
+          <option value="">No grouping</option>
+        </select>
+      </div>
+    </div>
+    <div class="alert-summary" id="alertSummary"></div>
+    <div class="alert-list" id="alertList"></div>
+  </div>
+
+  <div id="silencesTab" class="tab-content">
+    <div class="silence-list" id="silenceList"></div>
+  </div>
+
+  <div id="statusTab" class="tab-content">
+    <div class="status-content" id="statusContent"></div>
+  </div>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-panel">
+      <button class="detail-back" id="detailBack">&larr; Back</button>
+      <div class="detail-content" id="detailContent"></div>
+    </div>
+  </div>
+
+  <script src="../lib/storage.js"></script>
+  <script src="../lib/alertmanager-api.js"></script>
+  <script src="../lib/utils.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

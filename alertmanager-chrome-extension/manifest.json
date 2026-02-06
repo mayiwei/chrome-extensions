@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Alertmanager Monitor",
+  "version": "1.0.0",
+  "description": "Monitor Prometheus Alertmanager alerts with multi-instance support, real-time notifications, and a full monitoring dashboard.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Alertmanager Monitor"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "minimum_chrome_version": "110"
+}

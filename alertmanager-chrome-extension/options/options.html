@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alertmanager Monitor - Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <h1>Alertmanager Monitor</h1>
+      <p class="subtitle">Configure your Alertmanager instances and extension preferences</p>
+    </header>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Alertmanager Instances</h2>
+        <button class="btn btn-primary" id="addInstanceBtn">+ Add Instance</button>
+      </div>
+      <div id="instanceList" class="instance-list"></div>
+    </section>
+
+    <div class="form-overlay" id="instanceFormOverlay">
+      <div class="form-card">
+        <h3 id="formTitle">Add Instance</h3>
+        <input type="hidden" id="formInstanceId">
+        <div class="form-group">
+          <label for="formName">Instance Name *</label>
+          <input type="text" id="formName" placeholder="e.g. Production Alertmanager" required>
+        </div>
+        <div class="form-group">
+          <label for="formUrl">Alertmanager URL *</label>
+          <input type="text" id="formUrl" placeholder="http://localhost:9093" required>
+        </div>
+        <div class="form-group">
+          <label for="formAuthType">Authentication</label>
+          <select id="formAuthType">
+            <option value="none">None</option>
+            <option value="basic">Basic Auth</option>
+            <option value="bearer">Bearer Token</option>
+          </select>
+        </div>
+        <div id="basicAuthFields" class="auth-fields" style="display:none">
+          <div class="form-group">
+            <label for="formUsername">Username</label>
+            <input type="text" id="formUsername" placeholder="admin">
+          </div>
+          <div class="form-group">
+            <label for="formPassword">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="formPassword" placeholder="password">
+              <button type="button" class="toggle-vis" data-target="formPassword">Show</button>
+            </div>
+          </div>
+        </div>
+        <div id="bearerAuthFields" class="auth-fields" style="display:none">
+          <div class="form-group">
+            <label for="formToken">Token</label>
+            <div class="password-wrapper">
+              <input type="password" id="formToken" placeholder="Bearer token">
+              <button type="button" class="toggle-vis" data-target="formToken">Show</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-error" id="formError"></div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" id="formCancelBtn">Cancel</button>
+          <button class="btn btn-primary" id="formSaveBtn">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2>General Settings</h2>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <div class="setting-info">
+            <label>Poll Interval (seconds)</label>
+            <span class="setting-desc">How often to check for new alerts</span>
+          </div>
+          <input type="number" id="pollInterval" min="10" max="300" value="30" class="number-input">
+        </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <label>Badge Count</label>
+            <span class="setting-desc">Show active alert count on extension icon</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="enableBadge" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <label>Desktop Notifications</label>
+            <span class="setting-desc">Notify when new alerts fire</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="enableNotifications" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <h3 class="sub-heading">Default Filters</h3>
+      <div class="filter-grid">
+        <label class="filter-option"><input type="checkbox" id="defActive" checked><span>Active</span></label>
+        <label class="filter-option"><input type="checkbox" id="defSilenced" checked><span>Silenced</span></label>
+        <label class="filter-option"><input type="checkbox" id="defInhibited" checked><span>Inhibited</span></label>
+        <label class="filter-option"><input type="checkbox" id="defUnprocessed" checked><span>Unprocessed</span></label>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Data Management</h2>
+      <p class="data-mgmt-desc">Export your settings to a file for backup or migration, or import a previously exported configuration.</p>
+      <div class="data-mgmt-actions">
+        <button class="btn btn-secondary" id="exportConfigBtn">
+          <span class="btn-icon">↓</span> Export Configuration
+        </button>
+        <button class="btn btn-secondary" id="importConfigBtn">
+          <span class="btn-icon">↑</span> Import Configuration
+        </button>
+        <input type="file" id="importFileInput" accept=".json" style="display:none">
+      </div>
+    </section>
+
+    <div class="form-overlay" id="importConfirmOverlay">
+      <div class="form-card import-confirm-card">
+        <h3>Import Configuration</h3>
+        <div class="import-warning">
+          <span class="warning-icon">⚠</span>
+          <span>This will <strong>overwrite all current settings</strong>, including instances, preferences, and filters.</span>
+        </div>
+        <div class="import-preview" id="importPreview"></div>
+        <div class="import-credentials-warning" id="importCredentialsWarning" style="display:none">
+          <span class="warning-icon">🔑</span>
+          <span>This configuration contains saved credentials (passwords/tokens). Only import files from trusted sources.</span>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" id="importCancelBtn">Cancel</button>
+          <button class="btn btn-primary" id="importConfirmBtn">Import &amp; Overwrite</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2>About</h2>
+      <div class="about-content">
+        <p><strong>Alertmanager Monitor</strong> v<span id="extVersion">1.0.0</span></p>
+        <p>Monitor Prometheus Alertmanager alerts directly from your browser.</p>
+        <p><a href="https://prometheus.io/docs/alerting/latest/alertmanager/" target="_blank" rel="noopener">Alertmanager Documentation ↗</a></p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <button class="btn btn-primary btn-lg" id="saveSettingsBtn">Save Settings</button>
+      <span class="save-status" id="saveStatus"></span>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../lib/storage.js"></script>
+  <script src="../lib/alertmanager-api.js"></script>
+  <script src="../lib/utils.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
